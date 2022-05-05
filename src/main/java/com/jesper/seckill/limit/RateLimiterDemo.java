@@ -22,6 +22,7 @@ public class RateLimiterDemo {
             System.out.println("等待时间：" + rateLimiter.acquire());
             threadPool.execute(runnable);
         }
+        threadPool.shutdown();
     }
 
     private static class UserRequest implements Runnable {
@@ -31,6 +32,7 @@ public class RateLimiterDemo {
             this.id = id;
         }
 
+        @Override
         public void run() {
             System.out.println(id);
         }

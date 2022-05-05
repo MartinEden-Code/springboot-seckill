@@ -78,6 +78,7 @@ public class GoodsController {
 
     /**
      * 商品详情页面
+     * 页面缓存适用场景：适合于变化不大的场景，比如商品列表。实际项目中商品列表可能会分页，不可能每页都缓存，只是缓存前两页。
      */
     @RequestMapping(value = "/to_detail2/{goodsId}", produces = "text/html")
     @ResponseBody

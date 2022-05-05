@@ -91,8 +91,15 @@ public class UserService {
     }
 
     /**
+     * 而对象缓存根据token获取用户，且对象缓存永久有效
      * 将token做为key，用户信息做为value 存入redis模拟session
      * 同时将token存入cookie，保存登录状态
+     *
+     *
+     * 分布式Session
+     * 背景:分布式集群，多台服务器。客户端第一次请求落在第一台服务器上，第二次请求落在第二台服务器上。那么第二次Session就会丢失。
+     * 解决方案：Session并没有存到容器中来而是存到了缓存中，这就是分布式Session。
+     *
      */
     public void addCookie(HttpServletResponse response, String token, User user) {
         redisService.set(UserKey.token, token, user);

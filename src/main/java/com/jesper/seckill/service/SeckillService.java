@@ -30,20 +30,30 @@ public class SeckillService {
     public OrderInfo seckill(User user, GoodsVo goods){
         //减库存
         boolean success = goodsService.reduceStock(goods);
+        //减库存这个操作的返回值为true的时候才继续后面的下订单，否则会出现生成的订单数量远远多于卖出商品的数量。
         if (success){
             //下订单 写入秒杀订单
             return orderService.createOrder(user, goods);
         }else {
+            //库存不足，设置该商品库存状态
             setGoodsOver(goods.getId());
             return null;
         }
     }
 
+    /**
+     * 获取秒杀结果
+     * @param userId
+     * @param goodsId
+     * @return
+     */
     public long getSeckillResult(long userId, long goodsId){
         SeckillOrder order = orderService.getOrderByUserIdGoodsId(userId, goodsId);
+        //如果订单为空，有两种状态，排队和库存不足导致的失败，根据标记状态来判断
         if (order != null){
             return order.getOrderId();
         }else{
+            //获取库存状态
             boolean isOver = getGoodsOver(goodsId);
             if(isOver) {
                 return -1;

@@ -54,6 +54,7 @@ public class GoodsService {
         do {
             numAttempts++;
             try {
+                // 获取最新版本号:在减库存时获取商品表最新版本号。
                 sg.setVersion(goodsMapper.getVersionByGoodsId(goods.getId()));
                 ret = goodsMapper.reduceStockByVersion(sg);
             } catch (Exception e) {

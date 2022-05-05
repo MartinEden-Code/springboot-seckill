@@ -41,6 +41,7 @@ public class MQReceiver {
         User user = m.getUser();
         long goodsId = m.getGoodsId();
 
+        //秒杀三步：判断库存、判断是否已经秒杀到了、减库存下订单(事务)[seckillControll中也进行了商品是否已经秒杀完毕、缓存预减库存、重复秒杀判断三步]
         GoodsVo goodsVo = goodsService.getGoodsVoByGoodsId(goodsId);
         int stock = goodsVo.getStockCount();
         if(stock <= 0){
