@@ -45,6 +45,9 @@ public class SeckillController implements InitializingBean {
     @Autowired
     RedisService redisService;
 
+    /**
+     * rabbitmq
+     */
     @Autowired
     MQSender sender;
 

@@ -28,6 +28,16 @@ public class CodeMsg {
     public static CodeMsg SECKILL_OVER = new CodeMsg(500500, "商品已经秒杀完毕");
     public static CodeMsg REPEATE_SECKILL = new CodeMsg(500501, "不能重复秒杀");
 
+    //rocketMq异常
+    public static CodeMsg ROCKETMQ_SERVER_ERROR = new CodeMsg(500502, "服务器异常，请联系管理员处理！");
+    public static CodeMsg ROCKETMQ_ARGS_ERROR = new CodeMsg(500503, "参数不能为空");
+    public static CodeMsg ROCKETMQ_PRODUCER_ERROR = new CodeMsg(500504, "生产者错误！");
+    public static CodeMsg ROCKETMQ_CONSUMER_ERROR = new CodeMsg(500504, "生产者错误！");
+
+    public static CodeMsg ROCKETMQ_GROUPNAME_ERROR = new CodeMsg(500503, "groupName is null !!!");
+    public static CodeMsg ROCKETMQ_NAMEADDR_ERROR = new CodeMsg(500503, "namesrvAddr is null !!!");
+    public static CodeMsg ROCKETMQ_TOPIC_ERROR = new CodeMsg(500503, "topics is null !!!");
+
     private CodeMsg() {
     }
 
