@@ -35,6 +35,7 @@ public class PayProducer {
     }
 
     /**
+     * todo 注意 start方法不能调用两次，项目里面有一个自己写的producer start了，然后又引入RocketMQTemplate相关依赖，RocketMQTemplate自己start了 会报错
      * 对象在使用之前必须要调用一次，只能初始化一次
      */
     public void start(){

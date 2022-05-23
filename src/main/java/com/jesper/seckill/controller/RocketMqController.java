@@ -16,16 +16,11 @@ import com.jesper.seckill.rocketmq.producer.PayProducer;
 import com.jesper.seckill.rocketmq.producer.TransactionProducer;
 import org.apache.rocketmq.common.message.MessageQueue;
 import org.apache.rocketmq.remoting.exception.RemotingException;
-import org.apache.rocketmq.spring.core.RocketMQTemplate;
-import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -269,7 +264,7 @@ public class RocketMqController {
     // 保证事务的最终一致性 半消息： producer 发送消息到broker后未找到对应的消费者后 broker会把此消息标记为半消息 producer无法对此消息进行二次确认
     // 消息回查 ：broker 会不定时扫描某条长期处于半消息状态的消息，主动向生产者发送询问该消息的最终状态，即消息回查 ； 网络抖动 生产者重启 导致某条消息的二次确认丢失
 
-    //步骤 事务消息.md
+    //步骤 rocketMq.md
     //*****************************  **********************************************************************************
     @Autowired
     private TransactionProducer transactionProducer;
@@ -294,57 +289,75 @@ public class RocketMqController {
     }
 
 
-    //***********************************rocketmqTemplate 模板使用 上面都是直接定义生产者和消费者*****************************
+//    //***********************************rocketmqTemplate 模板使用*****************************************************
+//    //【无法和上面自定义的producery一起使用 producer.start会调用两次造成冲突，目前没找到解决办法】 上面都是直接定义生产者和消费者*******
+//
+//    @Autowired
+//    private RocketMQTemplate rocketMQTemplate;
+//
+//    /**
+//     * 普通字符串消息
+//     */
+//    public void sendMessage() {
+//        String json = "普通消息";
+//        rocketMQTemplate.convertAndSend(JmsConfig.SENDMESSAGE, json);
+//    }
+//
+//    /**
+//     * 同步消息
+//     */
+//    public void syncSend() {
+//        String json = "同步消息";
+//        SendResult sendMessage = rocketMQTemplate.syncSend(JmsConfig.SENDMESSAGE, json);
+//        System.out.println(sendMessage);
+//    }
+//
+//    /**
+//     * 异步消息
+//     */
+//    public void asyncSend() {
+//        String json = "异步消息";
+//        SendCallback callback = new SendCallback() {
+//            @Override
+//            public void onSuccess(SendResult sendResult) {
+//                System.out.println("123");
+//            }
+//
+//            @Override
+//            public void onException(Throwable throwable) {
+//                System.out.println("456");
+//            }
+//        };
+//        rocketMQTemplate.asyncSend(JmsConfig.SENDMESSAGE, json, callback);
+//    }
+//
+//    /**
+//     * 单向消息
+//     */
+//    public void onewaySend() {
+//        String json = "单向消息";
+//        rocketMQTemplate.sendOneWay(JmsConfig.SENDMESSAGE, json);
+//    }
 
-    @Autowired
-    private RocketMQTemplate rocketMQTemplate;
 
-    /**
-     * 普通字符串消息
-     */
-    public void sendMessage() {
-        String json = "普通消息";
-        rocketMQTemplate.convertAndSend(JmsConfig.SENDMESSAGE, json);
-    }
+    //************************************* rocketMQ 实现分布式事务解决方案（也可也用seata等）**************************************
+    //************************************* 例子，银行之间转账**************************************
 
-    /**
-     * 同步消息
-     */
-    public void syncSend() {
-        String json = "同步消息";
-        SendResult sendMessage = rocketMQTemplate.syncSend(JmsConfig.SENDMESSAGE, json);
-        System.out.println(sendMessage);
-    }
-
-    /**
-     * 异步消息
-     */
-    public void asyncSend() {
-        String json = "异步消息";
-        SendCallback callback = new SendCallback() {
-            @Override
-            public void onSuccess(SendResult sendResult) {
-                System.out.println("123");
-            }
-
-            @Override
-            public void onException(Throwable throwable) {
-                System.out.println("456");
-            }
-        };
-        rocketMQTemplate.asyncSend(JmsConfig.SENDMESSAGE, json, callback);
-    }
-
-    /**
-     * 单向消息
-     */
-    public void onewaySend() {
-        String json = "单向消息";
-        rocketMQTemplate.sendOneWay(JmsConfig.SENDMESSAGE, json);
-    }
-
-
-    //************************************* rocketMQ 实现分布式事务解决方案（seata等）**************************************
+//    @Autowired
+//    private AccountInfoService accountInfoService;
+//
+//    //http://localhost:8083/rocket/transfer?accountNo=1&amount=2
+//
+//    @RequestMapping(value = "/transfer", method = RequestMethod.GET)
+//    @ResponseBody
+//    public Result<String> transfer(@RequestParam("accountNo") String accountNo, @RequestParam("amount") Double amount) {
+//        //创建一个事务id，作为消息内容发到mq，后面将会在查询事务状态被用到
+//        String tx_no = UUID.randomUUID().toString();
+//        AccountChangeEvent accountChangeEvent = new AccountChangeEvent(accountNo, amount, tx_no);
+//        //发送消息
+//        accountInfoService.sendUpdateAccountBalance(accountChangeEvent);
+//        return Result.success("转账成功");
+//    }
 
 
 }
