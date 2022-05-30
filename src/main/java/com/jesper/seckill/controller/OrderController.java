@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.math.BigDecimal;
+
 /**
  * Created by jiangyunxiong on 2018/5/28.
  */
@@ -54,5 +56,18 @@ public class OrderController {
         vo.setGoods(goods);
         return Result.success(vo);
     }
+
+    //***********************测试 shardingjdbc 分库分表
+
+
+    //http://localhost:8083/order/insertOrder?price=111&userId=2L&status=success
+    @RequestMapping("/insertOrder")
+    @ResponseBody
+    public int insertOrder(BigDecimal price, Long userId, String status){
+        return orderService.insertOrder(price,userId,status);
+    }
+
+
+
 
 }

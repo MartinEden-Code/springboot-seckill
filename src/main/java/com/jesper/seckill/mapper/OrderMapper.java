@@ -4,6 +4,8 @@ import com.jesper.seckill.bean.OrderInfo;
 import com.jesper.seckill.bean.SeckillOrder;
 import org.apache.ibatis.annotations.*;
 
+import java.math.BigDecimal;
+
 /**
  * Created by jiangyunxiong on 2018/5/23.
  */
@@ -31,5 +33,8 @@ public interface OrderMapper {
 
     @Select("select * from sk_order_info where id = #{orderId}")
     public OrderInfo getOrderById(@Param("orderId")long orderId);
+
+    @Insert("insert into t_order(price,userId,status) values(#{price},#{userId},#{status})")
+    int insertOrder(@Param("price") BigDecimal price, @Param("userId") long userId, @Param("status") String status);
 
 }
